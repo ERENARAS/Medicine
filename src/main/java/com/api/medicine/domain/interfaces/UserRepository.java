@@ -1,7 +1,5 @@
 package com.api.medicine.domain.interfaces;
 
-import com.api.medicine.domain.entities.Patient;
-
 import java.util.Optional;
 
 /**
@@ -13,7 +11,7 @@ import java.util.Optional;
 public interface UserRepository {
     boolean save(User user);
 
-    Optional<Patient> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
     boolean existsByEmail(String email);
 }

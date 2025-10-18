@@ -1,18 +1,12 @@
 package com.api.medicine.application.use_cases;
 
-import com.api.medicine.domain.entities.Medicine;
-import com.api.medicine.domain.entities.Patient;
-import com.api.medicine.domain.entities.Prescription;
+import com.api.medicine.domain.entities.*;
 import com.api.medicine.domain.interfaces.PrescriptionRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * WritePrescriptionUseCase sınıfı, doktorun bir hastaya reçete yazmasını ve bu reçetenin sisteme kaydedilmesini sağlar.
- *
- * Clean Architecture'ın application (use case) katmanında yer alır.
- * Prescription oluşturma işlemi Doctor sınıfı tarafından yapılır, ardından repository aracılığıyla saklanır.
- */
+@Service
 public class WritePrescriptionUseCase {
     private final PrescriptionRepository repository;
 
@@ -20,26 +14,27 @@ public class WritePrescriptionUseCase {
         this.repository = repository;
     }
 
-
-
     /**
      * Reçete oluşturma ve kaydetme işlemini yürütür.
-     * öncesinde hastanın alerjisi kontrol edilir yazılmak istenen ilaçlarla
-     * eğer yoksa işlem devam eder
+     * Alerji kontrolü yapılır ve başarılı olursa kaydedilir.
      *
+     * @return true işlem başarılıysa, false alerji varsa veya başka bir hata oluşursa.
      */
-    public void execute(Prescription prescription) {
+    public boolean execute(Prescription prescription) {
         Patient patient = prescription.getPatient();
         List<Medicine> meds = prescription.getMedicines();
         List<String> allergies = patient.getAllergicMedicines();
 
-        for (int i = 0; i < meds.size(); i++) {
-            Medicine med = meds.get(i);
+        // 1. Alerji Kontrolü (İş Kuralı)
+        for (Medicine med : meds) {
             if (allergies.contains(med.getName())) {
-                throw new RuntimeException(" Reçete başarısız: Hasta '" + med.getName() + "' ilacına alerjiktir.");
+                // Controller bu false'u alıp "Alerjik İlaç Hatası" dönecektir.
+                return false;
             }
         }
 
+        // 2. Kaydetme (Repository'nin save metodu JpaRepository'den gelir.)
         repository.save(prescription);
+        return true;
     }
 }

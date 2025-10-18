@@ -2,7 +2,9 @@ package com.api.medicine.application.use_cases;
 
 import com.api.medicine.domain.interfaces.User;
 import com.api.medicine.domain.interfaces.UserRepository;
+import org.springframework.stereotype.Service;
 
+@Service
 public class LoginUseCase {
     private final UserRepository userRepository;
 
@@ -11,34 +13,14 @@ public class LoginUseCase {
     }
 
     /**
-     * Attempts to authenticate a user with the given credentials.
-     * @param email User's email
-     * @param password User's password
-     * @return The authenticated User object, or null if authentication fails
+     * Verilen kimlik bilgileriyle kullanıcıyı doğrulamaya çalışır.
+     * Eğer başarılıysa User nesnesini, başarısızsa null döner.
      */
     public User login(String email, String password) {
-        if (!userRepository.validateCredentials(email, password)) {
-            System.out.println(" Giriş başarısız: Şifre veya e-posta yanlış.");
+        User user = userRepository.findByEmail(email).orElse(null);
+        if (user == null || !user.getPassword().equals(password)) {
             return null;
         }
-
-        User user = userRepository.findByEmail(email);
-        if (user == null) {
-            System.out.println(" Kullanıcı bulunamadı.");
-        } else {
-            System.out.println(" Giriş başarılı: " + user.getName() + " (" + user.getEmail() + ")");
-        }
-
         return user;
-    }
-
-    /**
-     * Convenience method for tests: returns true if login is successful.
-     * @param email User's email
-     * @param password User's password
-     * @return true if login(email, password) returns non-null, false otherwise
-     */
-    public boolean execute(String email, String password) {
-        return login(email, password) != null;
     }
 }

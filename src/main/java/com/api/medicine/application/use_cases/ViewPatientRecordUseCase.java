@@ -3,53 +3,31 @@ package com.api.medicine.application.use_cases;
 import com.api.medicine.domain.entities.Patient;
 import com.api.medicine.domain.entities.Prescription;
 import com.api.medicine.domain.interfaces.PrescriptionRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
-/**
- * ViewPatientRecordUseCase sınıfı, bir hastanın alerji bilgilerini ve reçete geçmişini görüntülemek için kullanılır.
- *
- * Clean Architecture kapsamında application katmanında yer alır.
- * Doktorlar ya da hastalar, bu use case aracılığıyla hasta kayıtlarını görüntüleyebilir.
- *
- * Kullanımı:
- * - Hasta nesnesi parametre olarak verilir.
- * - Sistem, ilgili hastaya ait reçete geçmişini PrescriptionRepository üzerinden alır.
- * - Sonuç konsola yazdırılır.
- */
+@Service
 public class ViewPatientRecordUseCase {
 
     private final PrescriptionRepository prescriptionRepository;
 
-    /**
-     * Use case oluşturulurken reçete verilerine erişim sağlayan repository enjekte edilir.
-     *
-     * @param prescriptionRepository Reçeteleri sağlayan repository
-     */
     public ViewPatientRecordUseCase(PrescriptionRepository prescriptionRepository) {
         this.prescriptionRepository = prescriptionRepository;
     }
 
     /**
-     * Belirtilen hastanın alerji bilgilerini ve geçmiş reçetelerini konsola yazdırır.
+     * Belirtilen hastanın geçmiş reçetelerini döndürür.
+     * Alerjiler Patient nesnesinden zaten erişilebilirdir.
      *
      * @param patient Görüntülenecek hasta
+     * @return Reçete listesi veya hiç reçete yoksa boş bir liste.
      */
-    public void execute(Patient patient) {
-        System.out.println("Hasta Adı: " + patient.getName());
-        System.out.println("Alerjileri: " + patient.getAllergicMedicines());
-
+    public List<Prescription> getPrescriptionHistory(Patient patient) {
 
         Optional<List<Prescription>> optionalPrescriptions = prescriptionRepository.findByPatient(patient);
 
-        if (optionalPrescriptions.isEmpty() || optionalPrescriptions.get().isEmpty()) {
-            System.out.println("Bu hastaya ait reçete kaydı bulunamadı.");
-        } else {
-            System.out.println("Reçete Geçmişi:");
-            for (Prescription p : optionalPrescriptions.get()) {
-                System.out.println(p.getInfo());
-            }
-        }
+        return optionalPrescriptions.orElse(List.of());
     }
 }

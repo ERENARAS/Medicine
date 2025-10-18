@@ -2,12 +2,13 @@ package com.api.medicine.application.use_cases;
 
 import com.api.medicine.domain.entities.Medicine;
 import com.api.medicine.domain.entities.Patient;
+import org.springframework.stereotype.Service;
 import java.util.List;
+
 /**
- * CheckPatientAllergiesUseCase arayüzü, bir ilacın hastanın alerji listesiyle çakışıp çakışmadığını kontrol eder.
- *
- * Bu use case, doktor reçete yazmadan önce veya sistem ilaç verecekken güvenlik için kullanılır.
+ * CheckPatientAllergiesUseCase, bir ilacın hastanın alerji listesiyle çakışıp çakışmadığını kontrol eder.
  */
+@Service // Spring tarafından yönetilen bir servis olduğunu belirtir
 public class CheckAllergiesUseCase {
 
     /**
