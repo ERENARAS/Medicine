@@ -1,6 +1,7 @@
 package com.api.medicine.domain.interfaces;
 
 import com.api.medicine.domain.entities.ATM;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
@@ -9,9 +10,6 @@ import java.util.Optional;
  * tanımlar. Uygulamadaki ATM nesnesini yükleme ve kaydetme işlemleri bu
  * arayüz üzerinden gerçekleştirilir.
  */
-public interface ATMRepository {
-     ATM load();
-     void saveATM(ATM atm);
-     Optional<ATM> findById(Long id);
-     ATM save(ATM atm);
+public interface ATMRepository extends JpaRepository<ATM, Long> {
+
 }

@@ -30,17 +30,17 @@ public class Patient implements User {
     private List<String> allergicMedicines;
 
     @Column(unique = true,  nullable = false)
-    private String Email;
+    private String email;
     private String password;
 
 
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String mail) {
-        this.Email = mail;
+        this.email = mail;
     }
 
     public String getPassword() {
